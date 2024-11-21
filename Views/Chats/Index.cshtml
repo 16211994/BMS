@@ -1,0 +1,43 @@
+﻿@model IEnumerable<BuildingManagment.Models.Chat>
+
+@{
+    ViewBag.Title = "Chat";
+    var receiverId = ViewBag.ReceiverId;
+}
+
+<h2>Chat with User @receiverId</h2>
+
+<!-- Loop through the chat messages -->
+@foreach (var chat in Model)
+{
+    <div class="chat-message">
+        <strong>@chat.Sender.FirstName</strong> @chat.Date: @chat.Message
+
+        <!-- Add a "Reply" button -->
+        @Html.ActionLink("Reply", "Index", new { receiverId = receiverId, parentId = chat.Id })
+    </div>
+}
+
+<form action="SendMessage" method="post">
+    @using (Html.BeginForm("SendMessage", "Chat", FormMethod.Post))
+    {
+        <input type="hidden" name="SenderId" value="1" />
+        <input type="hidden" name="ReceiverId" value="receiverId" />
+        <input type="hidden" name="ParentId" value="ViewBag.ParentId ?? 0 " />
+
+        <div>
+            <label for="Message">Message:</label>
+            @Html.TextBox("Message", "", new { @class = "chat-textbox" })
+        </div>
+        <div>
+            <input type="submit" value="Send" />
+        </div>
+    }
+</form>
+
+<h1>Send Notification to All Users</h1>
+
+
+<div>
+    <a asp-action="Index">Back to Notifications</a>
+</div>
